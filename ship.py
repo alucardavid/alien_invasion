@@ -9,9 +9,15 @@ class Ship:
         self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
 
+        # Size of ship
+        self.width = 50
+        self.height = 50
+
         # Load the ship image and get its rect.
-        self.image = pygame.image.load('/Users/davidpereira/Desktop/learning_python/alien_invasion/images/p_branco.bmp')
+        self.image = pygame.image.load('/Users/davidpereira/Desktop/learning_python/alien_invasion/images/p_branco.bmp').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect()
+        self.image
 
         # Start each new ship at the bottom center of the screen.
         self.rect.midbottom = self.screen_rect.midbottom

@@ -8,9 +8,15 @@ class Alien(Sprite):
         """Initialize the alien and set its starting position."""
         super().__init__()
         self.screen = ai_game.screen
+        self.settings = ai_game.settings
+
+        # Size of alien
+        self.width = 40
+        self.height = 40
 
         # Load the alien imagem and set its rect attribute.
-        self.image = pygame.image.load('/Users/davidpereira/Desktop/learning_python/alien_invasion/images/alien.bmp')
+        self.image = pygame.image.load('/Users/davidpereira/Desktop/learning_python/alien_invasion/images/alien.bmp').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect()
 
         # Start each new alien near the top left of the screen.
@@ -19,3 +25,8 @@ class Alien(Sprite):
     
         # Store the alien's exact horizontal position.
         self.x = float(self.rect.x)
+
+    def update(self):
+        """Move the alien to the right"""
+        self.x += self.settings.alien_speed
+        self.rect.x = self.x
