@@ -22,7 +22,7 @@ class AlienInvasion:
         #self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().width
+        self.settings.screen_height = self.screen.get_rect().height
         
         pygame.display.set_caption("Alien Invasion")
 
@@ -64,7 +64,25 @@ class AlienInvasion:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
     
+    def _check_play_button(self, mouse_pos):
+        """Start a new game when the player clicks Play."""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            # Reset the game statistics.
+            self.stats.reset_status()
+            self.game_active = True
+
+            # Get rid of any remaining bullets and aliens.
+            self.bullets.empty()
+            self.aliens.empty()
+
+            # Create a new fleet and center the ship.
+            self._create_fleet()
+            self.ship.center_ship()
+
     def _check_keydown_events(self, event):
         """Respond to a keypresses."""
         if event.key == pygame.K_RIGHT:
@@ -131,7 +149,7 @@ class AlienInvasion:
         alien_width, alien_height = alien.rect.size
 
         current_x, current_y = alien_width, alien_height
-        while current_y < (self.settings.screen_height - 22 * alien_height):
+        while current_y < (self.settings.screen_height - 10 * alien_height):
             while current_x < (self.settings.screen_width - 2 * alien_width):
                 self._create_alien(current_x, current_y)
                 current_x += 2 * alien_width
@@ -177,14 +195,12 @@ class AlienInvasion:
         # Make the most recently drawn screen visible.
         pygame.display.flip()
 
-
-
     def _ship_hit(self):
         """Respond to the ship being hit by an alien"""
         if self.stats.ships_left > 0:
             # Decrement ships_left
             self.stats.ships_left -= 1
-
+            print(self.stats.ships_left)
             # Get rid of anu remainig bullets and aliens.
             self.bullets.empty()
             self.aliens.empty()
@@ -200,7 +216,7 @@ class AlienInvasion:
 
     def _check_aliens_bottom(self):
         """Check if any aliens have reached the bottom of the screen."""
-        for alien in  self.aliens.sprites():
+        for alien in self.aliens.sprites():
             if alien.rect.bottom >= self.settings.screen_height:
                 # Treat this the same as if the ship got hit.
                 self._ship_hit()
